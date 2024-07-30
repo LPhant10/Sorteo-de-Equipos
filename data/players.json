@@ -1,0 +1,143 @@
+[
+  {
+    "id": 1,
+    "name": "L Phant",
+    "rating": 4
+  },
+  {
+    "id": 3,
+    "name": "Beba",
+    "rating": 4
+  },
+  {
+    "id": 4,
+    "name": "Terry",
+    "rating": 3
+  },
+  {
+    "id": 5,
+    "name": "Polonio",
+    "rating": 3
+  },
+  {
+    "id": 6,
+    "name": "Alexis",
+    "rating": 3
+  },
+  {
+    "id": 7,
+    "name": "Jara",
+    "rating": 5
+  },
+  {
+    "id": 8,
+    "name": "Josue",
+    "rating": 5
+  },
+  {
+    "id": 9,
+    "name": "Rodrigo",
+    "rating": 3
+  },
+  {
+    "id": 10,
+    "name": "Full",
+    "rating": 4
+  },
+  {
+    "id": 11,
+    "name": "Jesse",
+    "rating": 4
+  },
+  {
+    "id": 12,
+    "name": "Cerna",
+    "rating": 5
+  },
+  {
+    "id": 13,
+    "name": "Conde",
+    "rating": 4
+  },
+  {
+    "id": 16,
+    "name": "Ambicho",
+    "rating": 3
+  },
+  {
+    "id": 17,
+    "name": "Cantaro",
+    "rating": 5
+  },
+  {
+    "id": 18,
+    "name": "Kevin",
+    "rating": 3
+  },
+  {
+    "id": 19,
+    "name": "Reynaga",
+    "rating": 5
+  },
+  {
+    "id": 20,
+    "name": "Bell",
+    "rating": 2
+  },
+  {
+    "id": 21,
+    "name": "Bicho",
+    "rating": 4
+  },
+  {
+    "id": 22,
+    "name": "Luis Simon",
+    "rating": 4
+  },
+  {
+    "id": 23,
+    "name": "Dante",
+    "rating": 3
+  },
+  {
+    "id": 24,
+    "name": "Ivan ",
+    "rating": 3
+  },
+  {
+    "id": 27,
+    "name": "Tabare",
+    "rating": 3
+  },
+  {
+    "id": 29,
+    "name": "Jeampol",
+    "rating": 5
+  },
+  {
+    "id": 29,
+    "name": "Guisseppe",
+    "rating": 1,
+    "isGoalkeeper": true
+  },
+  {
+    "id": 26,
+    "name": "Erick",
+    "rating": 1
+  },
+  {
+    "id": 27,
+    "name": "Alanya",
+    "rating": 1
+  },
+  {
+    "id": 27,
+    "name": "Torito",
+    "rating": 1
+  },
+  {
+    "id": 28,
+    "name": "Leon",
+    "rating": 4
+  }
+]

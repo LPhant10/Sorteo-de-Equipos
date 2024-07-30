@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Generator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Team Generator</h1>
+    <div id="mainContainer">
+      <div id="formContainer">
+        <form id="playerForm">
+          <input type="text" id="name" placeholder="Player Name" required>
+          <input type="number" id="rating" placeholder="Rating" required min="1" max="10">
+          <button type="submit">Add Player</button>
+        </form>
+        <label for="playersPerTeam">Players per Team:</label>
+        <select id="playersPerTeam">
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7" selected>7</option>
+        </select>
+        <label for="numberOfTeams">Number of Teams:</label>
+        <select id="numberOfTeams">
+          <option value="2">2</option>
+          <option value="3" selected>3</option>
+          <option value="4">4</option>
+        </select>
+        <button id="generateTeams">Generate Teams</button>
+      </div>
+      <div id="playersContainer">
+        <h2>Players</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>Number</th>
+              <th>Name</th>
+              <th>Rating</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="playersList"></tbody>
+        </table>
+        <button id="updatePlayers">Update Players</button>
+      </div>
+      <div id="teamsContainer">
+        <h2>Teams</h2>
+        <div id="teams"></div>
+      </div>
+      <div id="leftoversContainer">
+        <h2>Leftover Players</h2>
+        <div id="leftovers"></div>
+      </div>
+    </div>
+  </div>
+  <script src="scripts.js"></script>
+</body>
+</html>
