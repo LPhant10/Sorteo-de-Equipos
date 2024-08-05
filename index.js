@@ -66,7 +66,17 @@ app.delete('/players/:id', (req, res) => {
 app.post('/generate-teams', (req, res) => {
   const players = readPlayers();
   const { playersPerTeam, numberOfTeams, selectedPlayerIds } = req.body;
-  const selectedPlayers = players.filter(player => selectedPlayerIds.includes(player.id.toString()));
+
+  // Convertir selectedPlayerIds a enteros
+  const selectedIds = selectedPlayerIds.map(id => parseInt(id));
+
+  // Filtrar los jugadores seleccionados
+  const selectedPlayers = players.filter(player => selectedIds.includes(player.id));
+
+  // Verificar si hay suficientes jugadores seleccionados
+  if (selectedPlayers.length < playersPerTeam * numberOfTeams) {
+    return res.status(400).send('Not enough players selected to form the requested number of teams.');
+  }
 
   // Mezclar los jugadores aleatoriamente
   shuffleArray(selectedPlayers);
@@ -102,26 +112,10 @@ function generateTeams(players, playersPerTeam, numberOfTeams) {
   let teams = Array.from({ length: numberOfTeams }, () => ({ players: [], totalScore: 0, goalkeeper: null }));
   let leftovers = [];
 
-  // Función para encontrar el equipo con la puntuación total más baja
-  function getTeamWithMinScore() {
-    return teams.reduce((minTeam, team) => team.totalScore < minTeam.totalScore ? team : minTeam, teams[0]);
-  }
-
-  // Función para encontrar el equipo con menos jugadores altos (rating >= 4)
-  function getTeamWithFewerHighRatingPlayers() {
-    return teams.reduce((minTeam, team) => {
-      const highRatingPlayersCount = team.players.filter(p => p.rating >= 4).length;
-      const minHighRatingPlayersCount = minTeam.players.filter(p => p.rating >= 4).length;
-      return highRatingPlayersCount < minHighRatingPlayersCount ? team : minTeam;
-    }, teams[0]);
-  }
-
-  while (players.length > 0) {
-    let player = players.pop(); // Tomar el siguiente jugador con la puntuación más alta
-
-    // Si el jugador tiene una puntuación alta, priorizar equipos con menos jugadores altos
-    let team = player.rating >= 4 ? getTeamWithFewerHighRatingPlayers() : getTeamWithMinScore();
-
+  // Distribuir jugadores de manera equitativa
+  for (let i = 0; i < players.length; i++) {
+    let player = players[i];
+    let team = teams.reduce((prev, curr) => (prev.totalScore < curr.totalScore ? prev : curr)); // Equipo con la puntuación más baja
     if (team.players.length < playersPerTeam) {
       team.players.push(player);
       team.totalScore += player.rating;
@@ -130,42 +124,37 @@ function generateTeams(players, playersPerTeam, numberOfTeams) {
     }
   }
 
-  // Verificar si hay jugadores restantes que no encajaron en los equipos
-  if (leftovers.length > 0) {
-    leftovers.forEach(player => {
-      let team = getTeamWithMinScore(); // Encontrar el equipo con la puntuación más baja
-      if (team.players.length < playersPerTeam) {
-        team.players.push(player);
-        team.totalScore += player.rating;
-      }
-    });
-  }
-
   // Ajustar para asegurar que la diferencia de puntuación entre equipos no sea mayor a 1
-  let maxScore = Math.max(...teams.map(team => team.totalScore));
-  let minScore = Math.min(...teams.map(team => team.totalScore));
-  if (maxScore - minScore > 1) {
-    // Mover jugadores entre equipos si es necesario para equilibrar las puntuaciones
-    for (let i = 0; i < teams.length; i++) {
-      let team = teams[i];
-      if (team.totalScore > minScore + 1) {
-        let playerToMove = team.players.pop(); // Mover el último jugador agregado
-        team.totalScore -= playerToMove.rating;
-
-        let targetTeam = getTeamWithMinScore(); // Encontrar el equipo con la puntuación más baja
-        if (targetTeam.players.length < playersPerTeam) {
-          targetTeam.players.push(playerToMove);
-          targetTeam.totalScore += playerToMove.rating;
-        } else {
-          leftovers.push(playerToMove);
-        }
-      }
-    }
-  }
+  balanceTeams(teams, playersPerTeam);
 
   return { teams, leftovers };
 }
 
+// Función para balancear las puntuaciones de los equipos
+function balanceTeams(teams, playersPerTeam) {
+  let maxScore = Math.max(...teams.map(team => team.totalScore));
+  let minScore = Math.min(...teams.map(team => team.totalScore));
+
+  while (maxScore - minScore > 1) {
+    let maxTeam = teams.find(team => team.totalScore === maxScore);
+    let minTeam = teams.find(team => team.totalScore === minScore);
+
+    let playerToMove = maxTeam.players.pop(); // Mover el último jugador agregado
+    maxTeam.totalScore -= playerToMove.rating;
+
+    if (minTeam.players.length < playersPerTeam) {
+      minTeam.players.push(playerToMove);
+      minTeam.totalScore += playerToMove.rating;
+    } else {
+      maxTeam.players.push(playerToMove); // Devolver el jugador si no hay espacio en el equipo con la puntuación más baja
+      maxTeam.totalScore += playerToMove.rating;
+      break;
+    }
+
+    maxScore = Math.max(...teams.map(team => team.totalScore));
+    minScore = Math.min(...teams.map(team => team.totalScore));
+  }
+}
 
 // Función para leer jugadores desde un archivo
 function readPlayers() {
