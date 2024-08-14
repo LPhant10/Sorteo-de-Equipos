@@ -1,12 +1,17 @@
 async function fetchPlayers() {
+  // Guardar los IDs de los jugadores seleccionados antes de refrescar
+  const selectedPlayerIds = Array.from(document.querySelectorAll('.playerCheckbox:checked')).map(cb => cb.dataset.id);
+
   const response = await fetch('/players');
   const players = await response.json();
   const playersList = document.querySelector('#playersList');
   playersList.innerHTML = '';
+
   players.forEach((player, index) => {
+    const isChecked = selectedPlayerIds.includes(String(player.id)); // Verificar si estaba seleccionado antes
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td><input type="checkbox" class="playerCheckbox" id="player-${player.id}" data-id="${player.id}" checked></td>
+      <td><input type="checkbox" class="playerCheckbox" id="player-${player.id}" data-id="${player.id}" ${isChecked ? 'checked' : ''}></td>
       <td>${index + 1}</td>
       <td>${player.name}</td>
       <td>${player.rating}</td>
@@ -18,6 +23,7 @@ async function fetchPlayers() {
     playersList.appendChild(row);
   });
 }
+
 
 document.getElementById('playerForm').addEventListener('submit', async (e) => {
   e.preventDefault();
