@@ -81,18 +81,36 @@ app.post('/generate-teams', (req, res) => {
   // Mezclar los jugadores aleatoriamente
   shuffleArray(selectedPlayers);
 
-  // Identificar arqueros
+  // Identificar arqueros y jugadores de nivel 2
   const goalkeepers = selectedPlayers.filter(player => player.rating === 1);
   const fieldPlayers = selectedPlayers.filter(player => player.rating > 1);
 
-  // Generar equipos con arqueros
-  const { teams, leftovers } = generateTeams(fieldPlayers, playersPerTeam - 1, numberOfTeams);
+  // Generar equipos con jugadores de campo
+  let { teams, leftovers } = generateTeams(fieldPlayers, playersPerTeam - 1, numberOfTeams);
 
   // Asignar arqueros a los equipos
-  goalkeepers.forEach((goalkeeper, index) => {
-    const team = teams[index % numberOfTeams]; // Asignar arqueros de manera equitativa
-    team.goalkeeper = goalkeeper;
-  });
+  let goalkeepersAssigned = 0;
+  for (let i = 0; i < numberOfTeams; i++) {
+    if (goalkeepersAssigned < goalkeepers.length) {
+      teams[i].goalkeeper = goalkeepers[goalkeepersAssigned++];
+    }
+  }
+
+  // Si hay equipos sin arqueros, asignar jugadores de nivel 2 como arqueros
+  const remainingGoalkeeperSlots = numberOfTeams - goalkeepersAssigned;
+  if (remainingGoalkeeperSlots > 0) {
+    const secondaryGoalkeepers = fieldPlayers.filter(player => player.rating === 2);
+    for (let i = 0; i < remainingGoalkeeperSlots; i++) {
+      if (secondaryGoalkeepers.length > 0) {
+        const secondaryGoalkeeper = secondaryGoalkeepers.pop();
+        // Asignar el jugador de nivel 2 como arquero al primer equipo sin arquero
+        const teamIndex = (goalkeepersAssigned + i) % numberOfTeams;
+        if (!teams[teamIndex].goalkeeper) {
+          teams[teamIndex].goalkeeper = secondaryGoalkeeper;
+        }
+      }
+    }
+  }
 
   res.status(200).send({ teams, leftovers });
 });

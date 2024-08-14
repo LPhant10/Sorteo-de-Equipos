@@ -40,17 +40,7 @@ body {
   th {
     background-color: #f4f4f4;
   }
-  .actions {
-    display: flex;
-    justify-content: center; /* Centrar los botones en la celda */
-    gap: 10px; /* Espacio entre los botones */
-}
-
-.actions button {
-    margin-right: 0; /* Elimina el margen derecho */
-    padding: 5px 10px;
-    font-size: 12px;
-    cursor: pointer;
-}
-
+  .actions button {
+    margin-right: 5px;
+  }
   
